@@ -1,0 +1,25 @@
+{
+  "name": "imehr-skills-marketplace",
+  "version": "1.0.0",
+  "description": "Professional skills marketplace for Claude Code covering deployment, infrastructure, and development workflows",
+  "author": "Mehran Mozaffari",
+  "repository": "https://github.com/imehr/skills",
+  "skills_directory": "skills",
+  "categories": [
+    "deployment",
+    "infrastructure",
+    "development",
+    "workflows"
+  ],
+  "skills": [
+    {
+      "name": "railway",
+      "category": "deployment",
+      "path": "skills/deployment/railway",
+      "description": "Railway.com deployment and management for Next.js with PostgreSQL",
+      "version": "1.0.0",
+      "tested": true,
+      "word_count": 820
+    }
+  ]
+}
