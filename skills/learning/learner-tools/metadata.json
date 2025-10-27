@@ -1,0 +1,72 @@
+{
+  "id": "learner-tools",
+  "name": "Amplifier Learner Tools",
+  "version": "1.0.0",
+  "description": "Self-improving metacognitive recipe tools that learn from execution feedback and extract patterns to provide recommendations",
+  "category": "learning",
+  "tags": [
+    "learning",
+    "metacognitive",
+    "recipes",
+    "self-improving",
+    "feedback",
+    "patterns",
+    "decision-making",
+    "optimization"
+  ],
+  "author": "Amplifier",
+  "license": "MIT",
+  "repository": "https://github.com/imehr/amplifier",
+  "documentation": "docs/LEARNER_TOOLS_GUIDE.md",
+  "when_to_use": "Use when building recipes that need to learn from user feedback, improve over time, or extract patterns from execution data",
+  "features": [
+    "Decision Historian - Learn context-aware decisions",
+    "Style Learner - Learn personal writing voice",
+    "Meta-Recipe Tuner - Learn pipeline performance",
+    "Knowledge Compressor - Learn extraction rules"
+  ],
+  "minDataRequirements": {
+    "decision_historian": {
+      "samples": 3,
+      "feedback": "2 contexts"
+    },
+    "style_learner": {
+      "samples": 3,
+      "feedback": "5 edits"
+    },
+    "meta_recipe_tuner": {
+      "samples": 5,
+      "feedback": "2 stages"
+    },
+    "knowledge_compressor": {
+      "samples": 5,
+      "feedback": "3 sections"
+    }
+  },
+  "modules": [
+    "amplifier.learning.decision_historian",
+    "amplifier.learning.style_learner",
+    "amplifier.learning.meta_recipe_tuner",
+    "amplifier.learning.knowledge_compressor"
+  ],
+  "dependencies": {
+    "python": ">=3.11",
+    "pydantic": "*"
+  },
+  "commands": [
+    "learner-guide",
+    "learner-log",
+    "learner-analyze",
+    "learner-status",
+    "learner-clear",
+    "learner-export"
+  ],
+  "testCoverage": {
+    "total": 44,
+    "passing": 44,
+    "rate": "100%"
+  },
+  "status": "production",
+  "lastUpdated": "2024-10-27",
+  "marketplace": "imehr"
+}

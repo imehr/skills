@@ -115,6 +115,15 @@ ls ~/.claude/plugins/cache/imehr-skills/skills/
   - Status: ✅ Documentation complete
   - Slash command: `/build-skills`
 
+### Learning
+
+- **[learner-tools](skills/learning/learner-tools/)** - Self-improving metacognitive recipe tools that learn from execution feedback
+  - Use when: Building recipes that learn from feedback, improve over time, or extract patterns from execution data
+  - Features: Decision Historian, Style Learner, Meta-Recipe Tuner, Knowledge Compressor - 4 specialized learners with pattern extraction
+  - Size: 1081 words
+  - Status: ✅ Production Ready (44 tests, 100% passing)
+  - Slash commands: `/learner-guide`, `/learner-log`, `/learner-analyze`
+
 ## Skill Quality Standards
 
 All skills in this marketplace must meet these criteria:
@@ -157,6 +166,7 @@ We welcome contributions! To add a skill to this marketplace:
 - `infrastructure/` - Database, caching, monitoring skills
 - `development/` - Language, framework, and tool-specific skills
 - `workflows/` - CI/CD, testing, and process skills
+- `learning/` - Self-improving tools and metacognitive skills
 
 ### Creating a New Skill
 
