@@ -1,9 +1,9 @@
 {
   "name": "imehr-skills",
-  "version": "1.3.0",
+  "version": "1.5.0",
   "displayName": "Professional Skills",
   "description": "Battle-tested skills for deployment, infrastructure, frontend development, and workflow automation. All skills follow TDD methodology.",
-  "author": "Mehran Mozaffari",
+  "author": "Mehran Mozaffari <mehran.mozaffari@gmail.com>",
   "repository": "https://github.com/imehr/skills",
   "license": "MIT",
   "marketplace": "imehr/imehr-marketplace",
@@ -47,6 +47,17 @@
       "version": "1.0.0",
       "tested": false,
       "word_count": 1477
+    },
+    {
+      "name": "design-system-modern-oklch",
+      "category": "development",
+      "path": "skills/development/design-system-modern-oklch",
+      "command": "commands/design-system.md",
+      "description": "Modern OKLCH design system with Shadcn, CVA variants, custom shadows - production-ready design tokens and components for cutting-edge color science",
+      "version": "1.0.0",
+      "tested": true,
+      "verification_safeguards": false,
+      "word_count": 823
     },
     {
       "name": "building-skills-marketplace",
