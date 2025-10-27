@@ -46,6 +46,16 @@ cp -r skills/deployment/railway /path/to/project/.claude/skills/
   - Features: CLI workflows, troubleshooting, verification safeguards
   - Size: 820 words (82% reduction from original)
   - Status: ✅ Production-tested
+  - Slash command: `/railway`
+
+### Workflows
+
+- **[building-skills-marketplace](skills/workflows/building-skills-marketplace/)** - Complete workflow for creating and publishing Claude Code skills and marketplaces
+  - Use when: Creating new skills, setting up marketplaces, packaging for distribution
+  - Features: TDD methodology, two-repo structure, schema guides, verification checklists
+  - Size: 982 words
+  - Status: ✅ Documentation complete
+  - Slash command: `/build-skills`
 
 ## Skill Quality Standards
 
@@ -139,5 +149,5 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Last Updated:** October 2025
