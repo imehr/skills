@@ -22,6 +22,13 @@ This marketplace provides battle-tested skills that enhance Claude Code's capabi
 
 # Install all skills
 /plugin install imehr-skills@imehr-marketplace
+
+# Restart Claude Code to load slash commands
+exit
+claude
+
+# Verify installation
+/help  # Should show all skill commands
 ```
 
 ### Alternative: Install Individual Skills Manually
@@ -35,6 +42,50 @@ cp -r skills/deployment/railway ~/.claude/skills/
 
 # Or copy to a project-specific location
 cp -r skills/deployment/railway /path/to/project/.claude/skills/
+```
+
+## Getting Updates
+
+**IMPORTANT:** `/plugin update` does NOT work for getting new versions or new skills!
+
+The `/plugin update` command only checks if NEW plugin packages have been added to the marketplace catalog. It does NOT:
+- Update existing plugins to new versions
+- Detect new skills added to existing plugins
+- Pull updated content from the skills repository
+
+### How to Update to Latest Version
+
+When new skills are added or existing skills are updated, use this workflow:
+
+```bash
+# 1. Uninstall the current version
+/plugin uninstall imehr-skills
+
+# 2. Reinstall to get the latest version (fetches latest git tag)
+/plugin install imehr-skills@imehr-marketplace
+
+# 3. RESTART Claude Code (required for slash commands)
+exit
+claude
+
+# 4. Verify new skills are available
+/help  # Check for new slash commands
+```
+
+**Why this is necessary:**
+- The plugin system caches installed content
+- Version updates require a fresh install to fetch the latest git tag
+- New skills within an existing plugin are not detected by `/plugin update`
+- Slash commands only load at startup, so restart is mandatory
+
+### Checking Your Current Version
+
+```bash
+# Check installed version
+cat ~/.claude/plugins/cache/imehr-skills/.claude-plugin/manifest.json | grep version
+
+# List all installed skills
+ls ~/.claude/plugins/cache/imehr-skills/skills/
 ```
 
 ## Available Skills
