@@ -211,6 +211,9 @@ skills-repo/
 **4. Over 1000 words** - Move heavy content to supporting files
 **5. Missing verification** - Platform-specific skills need safeguards
 **6. No TEST_RESULTS.md** - Required documentation missing
+**7. No git tags** - Plugin system fetches tags, not main branch. MUST tag before users install
+**8. Not restarting after install** - Slash commands only load at Claude Code startup
+**9. Using `/plugin update` for versions** - Only works for NEW plugins, not version updates. Use uninstall/reinstall instead
 
 ## Critical Schema Requirements
 
@@ -251,22 +254,43 @@ skills-repo/
 - [ ] marketplace.json has correct schema
 - [ ] Both repos have LICENSE (MIT recommended)
 - [ ] README has installation instructions
-- [ ] Git tagged with version (v1.0.0)
+- [ ] **CRITICAL: Create git tags BEFORE users install:**
+  ```bash
+  # Skills repo
+  git tag -a v1.0.0 -m "Description" && git push origin v1.0.0
+  # Marketplace repo
+  git tag -a v1.0.0 -m "Description" && git push origin v1.0.0
+  ```
+  **Why:** Plugin system fetches specific git tags, NOT main branch
 
 ## Installation Testing
 
-**Test marketplace installation:**
-```bash
-# Remove skill for clean test
-rm -rf ~/.claude/skills/[skill-name]
+**CRITICAL: Always test clean install with restart**
 
-# Test installation
-/plugin marketplace add owner/marketplace-repo
+```bash
+# 1. Uninstall for clean test
+/plugin uninstall plugin-name
+
+# 2. Install from marketplace
 /plugin install plugin-name@marketplace-repo
 
-# Verify
-/help  # Should show slash command
-ls ~/.claude/skills/  # Should have skill directory
+# 3. RESTART Claude Code (slash commands load at startup)
+exit
+claude
+
+# 4. Verify installation
+/help  # Should show ALL slash commands
+ls ~/.claude/plugins/cache/plugin-name/  # Check files installed
+cat ~/.claude/plugins/cache/plugin-name/.claude-plugin/manifest.json  # Check version
+```
+
+**Installation path:** `~/.claude/plugins/cache/[plugin-name]/` (NOT `~/.claude/skills/`)
+
+**Version updates:** `/plugin update` only checks for NEW plugins. To get version updates:
+```bash
+/plugin uninstall plugin-name
+/plugin install plugin-name@marketplace  # Fetches latest git tag
+exit && claude  # Restart for slash commands
 ```
 
 ## Best Practices
@@ -294,4 +318,10 @@ ls ~/.claude/skills/  # Should have skill directory
 
 ---
 
-**Remember:** Skills require testing FIRST (RED-GREEN-REFACTOR). Marketplaces require TWO repositories (catalog + content). Slash commands are MANDATORY for `/help` visibility.
+**Remember:**
+- Skills require testing FIRST (RED-GREEN-REFACTOR)
+- Marketplaces require TWO repositories (catalog + content)
+- Slash commands are MANDATORY for `/help` visibility
+- Git tags are MANDATORY before users install (plugin system fetches tags, not main)
+- Restart Claude Code required for slash commands to appear
+- `/plugin update` doesn't update versions - use uninstall/reinstall

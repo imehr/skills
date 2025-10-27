@@ -1,6 +1,6 @@
 {
   "name": "imehr-skills",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "displayName": "Professional Skills",
   "description": "Battle-tested skills for deployment, infrastructure, and development workflows. All skills tested with RED-GREEN-REFACTOR methodology.",
   "author": "Mehran Mozaffari",
@@ -33,10 +33,11 @@
       "path": "skills/workflows/building-skills-marketplace",
       "command": "commands/build-skills.md",
       "description": "Complete workflow for creating and publishing Claude Code skills and marketplaces",
-      "version": "1.0.0",
+      "version": "1.2.0",
       "tested": false,
       "includes_lessons_learned": true,
-      "word_count": 982
+      "word_count": 1169,
+      "critical_updates": "Git tagging requirements, restart workflow, /plugin update limitations"
     }
   ],
   "features": [

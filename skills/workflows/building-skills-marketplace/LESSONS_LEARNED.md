@@ -124,40 +124,88 @@ skills-repo/
 - examples.md: 19KB (workflows)
 - troubleshooting.md: 21KB (error diagnosis)
 
-### 7. Git Tagging Is Essential
+### 7. Git Tagging Is MANDATORY Before Publishing
 
-**Version releases:**
+**Critical:** Plugin system fetches specific git tags, not main branch!
+
+**Problem:** Published v1.1.0 to marketplace.json but users couldn't install it
+
+**Root cause:** No git tag created - plugin system had nothing to fetch
+
+**Solution - Tag BOTH repositories:**
 ```bash
-git tag -a v1.0.0 -m "Release v1.0.0 - Description"
-git push origin v1.0.0
+# Skills repository (content)
+cd skills-repo
+git tag -a v1.1.0 -m "Release v1.1.0 - Description"
+git push origin v1.1.0
+
+# Marketplace repository (catalog)
+cd marketplace-repo
+git tag -a v1.1.0 -m "Release v1.1.0 - Description"
+git push origin v1.1.0
 ```
 
-**Marketplace references versions:**
+**Marketplace references these tags:**
 ```json
 {
-  "plugins": [{
-    "version": "1.0.0"  // Must match git tag
-  }]
+  "metadata": { "version": "1.1.0" },
+  "plugins": [{ "version": "1.1.0" }]  // Must match git tags
 }
 ```
 
-### 8. Installation Testing Workflow
+### 8. Plugin Updates Require Uninstall/Reinstall
+
+**Problem:** `/plugin update` didn't fetch new skills in v1.1.0
+
+**Root cause:** `/plugin update` only checks for NEW plugins in marketplace, not version updates of existing plugins
+
+**Solution for users getting updates:**
+```bash
+# This WON'T work for version updates:
+/plugin update plugin-name@marketplace  # Only checks for new plugins
+
+# This WILL work:
+/plugin uninstall plugin-name
+/plugin install plugin-name@marketplace  # Fetches latest git tag
+```
+
+**Why:** Marketplace only lists plugin names. System doesn't compare versions, just checks "is this plugin new?"
+
+### 9. Restart Required for Slash Commands
+
+**Problem:** After installing v1.1.0, only /railway showed in /help, not /build-skills
+
+**Root cause:** Slash commands load at Claude Code startup, not dynamically
+
+**Solution:** Always tell users to restart:
+```bash
+# After ANY plugin install/update:
+exit        # Exit Claude Code
+claude      # Restart
+
+# Then verify:
+/help       # Should show all new commands
+```
+
+**Installation path:** Plugins install to `~/.claude/plugins/cache/[plugin-name]/`, NOT `~/.claude/skills/`
+
+### 10. Installation Testing Workflow
 
 **Always test clean install:**
 ```bash
-# Backup existing
-cp -r ~/.claude/skills/[skill] ~/backups/
-
 # Remove for clean test
-rm -rf ~/.claude/skills/[skill]
+/plugin uninstall plugin-name
 
 # Test installation
-/plugin marketplace add owner/marketplace
-/plugin install plugin@marketplace
+/plugin install plugin-name@marketplace
+
+# RESTART Claude Code
+exit && claude
 
 # Verify
-/help  # Should show command
-ls ~/.claude/skills/  # Should have skill
+/help  # Should show all commands
+ls ~/.claude/plugins/cache/plugin-name/  # Should have all files
+cat ~/.claude/plugins/cache/plugin-name/.claude-plugin/manifest.json  # Check version
 ```
 
 ## Process Improvements
@@ -196,9 +244,11 @@ ls ~/.claude/skills/  # Should have skill
 - [ ] Slash command in commands/
 - [ ] Manifest links skill to command
 - [ ] marketplace.json schema correct
-- [ ] Git tagged (v1.0.0)
+- [ ] **CRITICAL: Git tag BOTH repos** (skills + marketplace)
+- [ ] Tags pushed to remote
 - [ ] Clean install tested
-- [ ] Shows in `/help`
+- [ ] **CRITICAL: Restart Claude Code after install**
+- [ ] Shows in `/help` after restart
 
 ## Key Insights
 
@@ -208,6 +258,10 @@ ls ~/.claude/skills/  # Should have skill
 4. **Two repos required** - Catalog + Content separation
 5. **Verification safeguards** - Platform-specific skills need boundaries
 6. **Documentation proves quality** - TEST_RESULTS.md is not optional
+7. **Git tags are mandatory** - Plugin system fetches tags, not main branch. Tag BEFORE users install
+8. **Restart required** - Slash commands only load at Claude Code startup
+9. **Update ≠ Upgrade** - `/plugin update` only finds NEW plugins, not version updates
+10. **Installation path** - Plugins live in `~/.claude/plugins/cache/`, not `~/.claude/skills/`
 
 ## Resources Created
 
