@@ -48,6 +48,13 @@ cp -r skills/deployment/railway /path/to/project/.claude/skills/
   - Status: ✅ Production-tested
   - Slash command: `/railway`
 
+- **[telegram-integration](skills/deployment/telegram-integration/)** - Telegram bot and Mini App integration using Telegraf
+  - Use when: Telegram bot development, Mini App setup, webhook/polling debugging, deployment to Railway/Vercel
+  - Features: Diagnostic router, environment-specific patterns (local/production), platform-specific solutions, Mini App security validation
+  - Size: 1,200 words
+  - Status: ✅ Production-ready
+  - Slash command: `/telegram`
+
 ### Workflows
 
 - **[building-skills-marketplace](skills/workflows/building-skills-marketplace/)** - Complete workflow for creating and publishing Claude Code skills and marketplaces
