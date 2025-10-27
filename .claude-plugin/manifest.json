@@ -1,6 +1,6 @@
 {
   "name": "imehr-skills",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Professional Skills",
   "description": "Battle-tested skills for deployment, infrastructure, and development workflows. All skills tested with RED-GREEN-REFACTOR methodology.",
   "author": "Mehran Mozaffari",
@@ -8,6 +8,7 @@
   "license": "MIT",
   "marketplace": "imehr/imehr-marketplace",
   "skills_directory": "skills",
+  "commands_directory": "commands",
   "categories": [
     "deployment",
     "infrastructure",
@@ -19,6 +20,7 @@
       "name": "railway",
       "category": "deployment",
       "path": "skills/deployment/railway",
+      "command": "commands/railway.md",
       "description": "Railway.com deployment and management for Next.js with PostgreSQL",
       "version": "1.0.0",
       "tested": true,
@@ -31,6 +33,7 @@
     "Verification safeguards for platform-specific skills",
     "Token-efficient (<1000 words per skill)",
     "Comprehensive documentation",
-    "False-positive prevention"
+    "False-positive prevention",
+    "Slash commands for all skills"
   ]
 }
