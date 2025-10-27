@@ -1,8 +1,8 @@
 {
   "name": "imehr-skills",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "displayName": "Professional Skills",
-  "description": "Battle-tested skills for deployment, infrastructure, and development workflows. All skills tested with RED-GREEN-REFACTOR methodology.",
+  "description": "Battle-tested skills for deployment, infrastructure, frontend development, and workflow automation. All skills follow TDD methodology.",
   "author": "Mehran Mozaffari",
   "repository": "https://github.com/imehr/skills",
   "license": "MIT",
@@ -26,6 +26,27 @@
       "tested": true,
       "verification_safeguards": true,
       "word_count": 820
+    },
+    {
+      "name": "telegram-integration",
+      "category": "deployment",
+      "path": "skills/deployment/telegram-integration",
+      "command": "commands/telegram.md",
+      "description": "Telegram bot and Mini App integration using Telegraf - handles bot development, webhook/polling, AI chatbot integration, deployment to Railway/Vercel",
+      "version": "1.0.0",
+      "tested": true,
+      "verification_safeguards": true,
+      "word_count": 3516
+    },
+    {
+      "name": "frontend",
+      "category": "development",
+      "path": "skills/development/frontend",
+      "command": "commands/frontend.md",
+      "description": "Frontend development with Next.js 15, React 19, Shadcn, and Tailwind - enforces approved stack, component patterns, responsive design, accessibility",
+      "version": "1.0.0",
+      "tested": false,
+      "word_count": 1477
     },
     {
       "name": "building-skills-marketplace",

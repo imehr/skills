@@ -207,5 +207,5 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
-**Version:** 1.2.0
+**Version:** 1.3.0
 **Last Updated:** January 2025
