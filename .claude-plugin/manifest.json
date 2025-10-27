@@ -1,9 +1,12 @@
 {
-  "name": "imehr-skills-marketplace",
+  "name": "imehr-skills",
   "version": "1.0.0",
-  "description": "Professional skills marketplace for Claude Code covering deployment, infrastructure, and development workflows",
+  "displayName": "Professional Skills",
+  "description": "Battle-tested skills for deployment, infrastructure, and development workflows. All skills tested with RED-GREEN-REFACTOR methodology.",
   "author": "Mehran Mozaffari",
   "repository": "https://github.com/imehr/skills",
+  "license": "MIT",
+  "marketplace": "imehr/imehr-marketplace",
   "skills_directory": "skills",
   "categories": [
     "deployment",
@@ -19,7 +22,15 @@
       "description": "Railway.com deployment and management for Next.js with PostgreSQL",
       "version": "1.0.0",
       "tested": true,
+      "verification_safeguards": true,
       "word_count": 820
     }
+  ],
+  "features": [
+    "TDD-tested skills (RED-GREEN-REFACTOR)",
+    "Verification safeguards for platform-specific skills",
+    "Token-efficient (<1000 words per skill)",
+    "Comprehensive documentation",
+    "False-positive prevention"
   ]
 }
