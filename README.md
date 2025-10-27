@@ -14,7 +14,17 @@ This marketplace provides battle-tested skills that enhance Claude Code's capabi
 
 ## Installation
 
-### Install Individual Skills
+### Recommended: Install via Marketplace (Easiest)
+
+```bash
+# Add the marketplace
+/plugin marketplace add imehr/imehr-marketplace
+
+# Install all skills
+/plugin install imehr-skills@imehr-marketplace
+```
+
+### Alternative: Install Individual Skills Manually
 
 ```bash
 # Clone this repository
@@ -25,21 +35,6 @@ cp -r skills/deployment/railway ~/.claude/skills/
 
 # Or copy to a project-specific location
 cp -r skills/deployment/railway /path/to/project/.claude/skills/
-```
-
-### Install as Claude Code Plugin
-
-Add to your `.claude/plugins/config.json`:
-
-```json
-{
-  "plugins": [
-    {
-      "name": "imehr-skills-marketplace",
-      "source": "github:imehr/skills"
-    }
-  ]
-}
 ```
 
 ## Available Skills
