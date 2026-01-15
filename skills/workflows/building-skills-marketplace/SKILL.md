@@ -203,6 +203,104 @@ skills-repo/
 }
 ```
 
+## Essential Workflow: Git Tagging & Version Management
+
+**CRITICAL:** Claude Code's plugin system installs plugins by cloning git repositories at specific tags, NOT from the main branch. Every plugin listed in marketplace.json MUST have a matching git tag in its repository.
+
+### Version Matching Requirement
+
+The `version` field in marketplace.json MUST match a git tag in the plugin repository:
+
+```json
+// marketplace.json
+{
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "version": "1.0.0",  // <-- Must match git tag
+      "source": {
+        "url": "https://github.com/owner/my-plugin.git"
+      }
+    }
+  ]
+}
+```
+
+The plugin repository MUST have a `v1.0.0` or `1.0.0` git tag (both formats work).
+
+### Creating Tags for New Plugins
+
+**Before adding a plugin to marketplace.json:**
+
+```bash
+# 1. Navigate to plugin repository
+cd /path/to/plugin-repo
+
+# 2. Create and push tag (use v prefix or not - both work)
+git tag v1.0.0
+git push origin v1.0.0
+
+# 3. Verify tag exists
+git ls-remote --tags origin
+# Should show: refs/tags/v1.0.0
+
+# 4. NOW add to marketplace.json with matching version
+```
+
+### Updating Plugin Versions
+
+**When you update a plugin and increment its version in marketplace.json, you MUST create a new matching git tag:**
+
+```bash
+# 1. Make changes in plugin repository
+cd /path/to/plugin-repo
+
+# 2. Commit changes
+git add .
+git commit -m "Update feature X"
+
+# 3. Create NEW version tag
+git tag v1.1.0
+git push origin v1.1.0
+
+# 4. Update marketplace.json to reference new version
+# Change "version": "1.0.0" → "version": "1.1.0"
+
+# 5. Commit marketplace.json change
+cd /path/to/marketplace-repo
+git add .claude-plugin/marketplace.json
+git commit -m "Update my-plugin to v1.1.0"
+git push
+```
+
+### Troubleshooting: Plugin Installation Fails
+
+If users report "can't install plugin from marketplace", check:
+
+1. **Tag exists:**
+   ```bash
+   git ls-remote --tags https://github.com/owner/plugin.git
+   ```
+
+2. **Version matches marketplace.json:**
+   - marketplace.json says `"version": "1.0.0"`
+   - Repository must have `v1.0.0` or `1.0.0` tag
+
+3. **Fix missing tag:**
+   ```bash
+   cd /path/to/plugin-repo
+   git tag v1.0.0  # Use version from marketplace.json
+   git push origin v1.0.0
+   ```
+
+### Tag Format
+
+Both formats work:
+- `v1.0.0` (recommended, standard convention)
+- `1.0.0` (also works)
+
+Choose one format and be consistent across your plugins.
+
 ## Common Mistakes
 
 **1. Wrong marketplace.json schema** - Must have `owner` object, `metadata` object, `source.url` not `repository`
@@ -211,7 +309,7 @@ skills-repo/
 **4. Over 1000 words** - Move heavy content to supporting files
 **5. Missing verification** - Platform-specific skills need safeguards
 **6. No TEST_RESULTS.md** - Required documentation missing
-**7. No git tags** - Plugin system fetches tags, not main branch. MUST tag before users install
+**7. No git tags or version mismatch** - CRITICAL: Every plugin version in marketplace.json must have matching git tag in plugin repository. See "Git Tagging & Version Management" section above
 **8. Not restarting after install** - Slash commands only load at Claude Code startup
 **9. Using `/plugin update` for versions** - Only works for NEW plugins, not version updates. Use uninstall/reinstall instead
 
@@ -319,9 +417,10 @@ exit && claude  # Restart for slash commands
 ---
 
 **Remember:**
+- **Git tags MANDATORY:** Every plugin version in marketplace.json MUST have matching git tag in plugin repo (v1.0.0 or 1.0.0)
+- **Version updates = new tags:** When incrementing plugin version, create new git tag BEFORE updating marketplace.json
 - Skills require testing FIRST (RED-GREEN-REFACTOR)
 - Marketplaces require TWO repositories (catalog + content)
 - Slash commands are MANDATORY for `/help` visibility
-- Git tags are MANDATORY before users install (plugin system fetches tags, not main)
 - Restart Claude Code required for slash commands to appear
 - `/plugin update` doesn't update versions - use uninstall/reinstall
