@@ -1,153 +1,121 @@
 ---
 name: railway
-description: Use when user mentions Railway deployment, production environment issues, environment variables, database migrations, deployment failures, or Railway CLI commands - provides Railway.com platform integration for Next.js with PostgreSQL operations, monitoring, and troubleshooting
+description: "Railway.com deployment and management - deployment, logs, migrations, troubleshooting, monorepo strategies, security, and CLI reference. Use when deploying to Railway, configuring services, managing environment variables, or debugging deployment issues."
 ---
 
 # Railway Deployment & Management
 
-## ⚠️ VERIFICATION REQUIRED
+## Verification
 
 **BEFORE using this skill, verify the project uses Railway:**
 
-1. **User explicitly mentions "Railway"** in their request, OR
-2. **Check for Railway artifacts:**
-   - `railway.json` or `railway.toml` file exists
-   - `.railway` directory exists
-   - Git repo shows Railway deployment history
+1. **User explicitly mentions "Railway"**, OR
+2. **Check for Railway artifacts:** `railway.json`, `railway.toml`, `.railway/` directory
 3. **When in doubt, ASK:** "Is this project deployed to Railway?"
 
-**DO NOT use this skill for:**
-- Projects on Vercel, AWS, Heroku, or other platforms
-- Projects where deployment platform is unclear
-- "Deployment" questions without platform context
+**DO NOT use for:** Vercel, AWS, Heroku, Fly.io, or unknown platforms.
 
-## Overview
-
-Railway.com platform skill for deploying and managing Next.js applications with PostgreSQL. Provides CLI workflows for deployment, environment management, database operations, and troubleshooting.
-
-**Core principle:** Use Railway CLI for deployments, database access, and environment management. Use internal DATABASE_URL (not PUBLIC) to avoid egress fees.
-
-## When to Use
-
-**ONLY after verifying this is a Railway project**, use this skill when you see:
-- User explicitly says "Railway"
-- "deploy to Railway" or "Railway deployment"
-- "check Railway logs" or "deployment failed" (on Railway)
-- "Railway environment variables" or "Railway database"
-- "Railway CLI" commands
-- Production troubleshooting (after confirming Railway)
-
-## When NOT to Use
-
-**NEVER use this skill for:**
-- Projects on Vercel, AWS, Heroku, Netlify, Render, Fly.io
-- Generic "deployment" questions (ask which platform first)
-- Local development (unless explicitly using `railway run`)
-- Database operations on non-Railway databases
-- General Next.js questions unrelated to Railway
-- **When platform is unclear** - ASK THE USER FIRST
-
-**If uncertain, verify first:**
-```bash
-# Check for Railway configuration
-ls -la railway.json railway.toml .railway/
-# If files don't exist → NOT a Railway project → DON'T use this skill
-```
-
-## Quick Reference
+## Quick Reference (CLI 2026-02)
 
 | Task | Command |
 |------|---------|
-| Deploy | `railway up` |
+| Deploy | `railway up --detach` |
+| Deploy subdirectory | `railway up --path-as-root ./web` |
 | Check status | `railway status` |
 | View logs | `railway logs` |
 | Build logs | `railway logs --build` |
-| Set variable | `railway variables --set "KEY=VALUE"` |
-| List variables | `railway variables --kv` |
+| Last N lines | `railway logs -n 100` |
+| Set variable | `railway variable set KEY=VALUE` |
+| Set multiple | `railway variable set K1=V1 K2=V2` |
+| List variables | `railway variable list` |
+| List as KV | `railway variable list --kv` |
+| Delete variable | `railway variable delete KEY` |
+| Skip redeploy on set | `railway variable set K=V --skip-deploys` |
 | Connect to DB | `railway connect postgres` |
-| Run migrations | `railway run node scripts/migrate.js` |
+| Run with env | `railway run npm start` |
 | Open dashboard | `railway open` |
 | Redeploy | `railway redeploy --yes` |
-| Switch env | `railway environment [ENV]` |
+| Switch env | `railway environment staging` |
+| SSH into container | `railway ssh` |
+| Service link | `railway service backend` |
+| Deployment list | `railway deployment list --limit 5` |
+| Domain | `railway domain` |
 
-## Project Verification
+## Global Options
 
-**Before running ANY Railway commands, verify project uses Railway:**
+These flags work across most commands:
 
-```bash
-# Method 1: Check for Railway config files
-ls railway.json railway.toml .railway/
-
-# Method 2: Check if linked to Railway
-railway status
-
-# Method 3: Ask user
-# "Is this project deployed to Railway, or using another platform?"
-```
-
-**If no Railway artifacts found → ASK USER before proceeding.**
+| Option | Short | Purpose |
+|--------|-------|---------|
+| `--service <SERVICE>` | `-s` | Target specific service |
+| `--environment <ENV>` | `-e` | Target specific environment |
+| `--project <ID>` | `-p` | Target specific project |
+| `--json` | — | Scriptable JSON output |
+| `--yes` | `-y` | Skip confirmation prompts |
 
 ## Essential Patterns
 
 **Deploy Workflow:**
 ```bash
-railway status && railway up && railway logs
+railway status && railway up --detach
+railway logs -n 20  # check after deploy
+```
+
+**Monorepo Deploy (CRITICAL: use --path-as-root):**
+```bash
+railway up --path-as-root ./web --service web
+railway up --path-as-root ./backend --service backend
 ```
 
 **Debug Failed Deployment:**
 ```bash
-railway logs --build  # Check build errors
-railway variables     # Verify env vars
-railway run npm run build  # Test locally
+railway logs --build           # Build errors
+railway variable list          # Verify env vars
+railway run npm run build      # Test locally with Railway env
 ```
 
 **Database Migration (ALWAYS backup first):**
 ```bash
-railway run pg_dump -Fc > backup.dump  # 1. BACKUP FIRST (mandatory)
-railway connect postgres -c "\dt"      # 2. Check current state
-railway run node scripts/migrate.js    # 3. Run migration
-railway connect postgres -c "\dt"      # 4. Verify changes
+railway run pg_dump -Fc > backup.dump  # 1. BACKUP
+railway connect postgres               # 2. Verify state
+railway run npm run migrate            # 3. Migrate
+railway connect postgres               # 4. Verify
 ```
 
-## Common Mistakes
+**Set Variables:**
+```bash
+railway variable set API_KEY=secret123 NODE_ENV=production
+railway variable set KEY=VALUE --skip-deploys  # no redeploy
+echo "multiline" | railway variable set KEY --stdin
+```
 
-**1. Using PUBLIC_URL instead of internal DATABASE_URL** - causes egress charges
-**2. Forgetting to redeploy after setting variables** - use `railway redeploy --yes`
-**3. Not testing locally** - always `railway run npm run build` first
-**4. Hardcoded PORT** - use `process.env.PORT || 3000` (Railway assigns PORT)
-**5. Next.js env vars at build-time** - vars must exist during build, not just runtime; use lazy initialization for module-level code
-**6. Running migrations without backup** - ALWAYS backup first: `railway run pg_dump -Fc > backup.dump`
-**7. Re-running failed migrations** - diagnose state first, don't re-run blindly
+## Key Gotchas
+
+- **`--path-as-root`** is required for monorepo subdirectory deploys — without it, subdirectory nests in archive
+- **`--project` requires `--environment`** — both must be specified together
+- **Variable changes trigger redeploy** by default — use `--skip-deploys` to prevent
+- **`railway logs`** streams live by default; `-n N` fetches history and exits (NOT `--limit`)
+- **`railway variable`** (singular) is the command — `variables`, `vars`, `var` are aliases
+- **TLS between Railway services** may fail with `UNABLE_TO_GET_ISSUER_CERT_LOCALLY` — use `NODE_TLS_REJECT_UNAUTHORIZED=0` or private networking
+- **CI/CD tokens**: `RAILWAY_TOKEN` (project-scoped) or `RAILWAY_API_TOKEN` (account-level)
+
+## Common Errors
+
+| Error | Fix |
+|-------|-----|
+| `undefined variable 'npm'` in Nixpacks | Don't add npm to nixPkgs — comes with nodejs |
+| `Tracker 'idealTree' already exists` | `npm cache clean --force && npm install` |
+| `gyp ERR! build error` | Add `nixPkgs = ["nodejs", "python3", "gcc", "gnumake"]` |
+| `Cannot find module` (workspace) | Use repo root, not subdirectory, as Root Directory |
+| `EACCES: permission denied` | Use `/tmp` for temp files or add a volume |
+| Service crashes on start | Check `railway logs`, verify env vars, check healthcheck |
 
 ## Additional Resources
 
-**Detailed documentation in supporting files:**
-- **[reference.md](reference.md)** - Complete CLI command reference with all options
-- **[examples.md](examples.md)** - Real-world workflows, scripts, CI/CD pipelines
-- **[troubleshooting.md](troubleshooting.md)** - Error messages, diagnosis, solutions
-- **[migrations.md](migrations.md)** - Database migration strategies
+**Detailed docs in supporting files:**
+- **[reference.md](reference.md)** — Complete CLI command reference with all flags
+- **[examples.md](examples.md)** — Real-world workflows, scripts, CI/CD pipelines
+- **[troubleshooting.md](troubleshooting.md)** — Error messages, diagnosis, solutions
+- **[migrations.md](migrations.md)** — Database migration strategies
 
-**Official Railway resources:**
-- **CLI Docs:** https://docs.railway.com/reference/cli-api
-- **Status Page:** https://status.railway.com/
-- **Discord:** https://discord.gg/railway
-
-## Best Practices
-
-- **Check logs first:** `railway logs --build` when debugging
-- **Test locally:** `railway run npm run build` before deploying
-- **Use internal DATABASE_URL** (not PUBLIC_URL) to avoid egress fees
-- **Backup before migrations:** `railway run pg_dump -Fc > backup.dump`
-- **Monitor deployments:** `railway logs | grep -i error`
-
-## When Deployment Fails
-
-**CRITICAL: Diagnose before acting. Never guess under pressure.**
-
-1. `railway logs --build` - check build errors FIRST
-2. `railway variables` - verify env vars exist
-3. `railway run npm run build` - test locally with Railway env
-4. Check troubleshooting.md for specific error messages
-5. Railway status: https://status.railway.com/
-
-**For database issues: backup → diagnose → fix → verify**
+**Official:** [docs.railway.com](https://docs.railway.com/) · [CLI Reference](https://docs.railway.com/reference/cli-api)

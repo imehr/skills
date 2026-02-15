@@ -1,6 +1,6 @@
 {
   "name": "imehr-skills",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "displayName": "Professional Skills",
   "description": "Battle-tested skills for deployment, infrastructure, frontend development, and workflow automation. All skills follow TDD methodology.",
   "author": "Mehran Mozaffari <mehran.mozaffari@gmail.com>",
@@ -21,11 +21,11 @@
       "category": "deployment",
       "path": "skills/deployment/railway",
       "command": "commands/railway.md",
-      "description": "Railway.com deployment and management for Next.js with PostgreSQL",
-      "version": "1.0.0",
+      "description": "Railway.com deployment and management - deployment, logs, migrations, troubleshooting, monorepo strategies, security, and CLI reference",
+      "version": "2.0.0",
       "tested": true,
       "verification_safeguards": true,
-      "word_count": 820
+      "word_count": 1200
     },
     {
       "name": "telegram-integration",
